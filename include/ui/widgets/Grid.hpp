@@ -37,7 +37,7 @@ public:
     void shrink_to_fit();
 
     Widget* get_widget(Coords2 place);
-    void set_widget(Coords2 place, Widget* widget = nullptr, SizePolicy size_policy = SizePolicy::Expand);
+    void set_widget(Coords2 place, Widget* widget = nullptr, SizePolicy size_policy = SizePolicy{});
     void set_widget_size_policy(Coords2 place, SizePolicy size_policy);
 
     void draw(Rectangle bounds) override;

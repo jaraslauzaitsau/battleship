@@ -2,15 +2,19 @@
 
 #include <raylib.h>
 
-enum class SizePolicy {
+enum class SizePolicyValue {
     Fit,
     Expand
+};
+struct SizePolicy {
+    SizePolicyValue horizontal = SizePolicyValue::Expand;
+    SizePolicyValue vertical = SizePolicyValue::Expand;
 };
 
 class Widget {
 protected:
     Widget* parent = nullptr;
-    SizePolicy size_policy = SizePolicy::Expand;
+    SizePolicy size_policy = SizePolicy{};
     Vector2 size = {0, 0};
 
 public:
