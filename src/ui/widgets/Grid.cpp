@@ -1,4 +1,5 @@
 #include "ui/widgets/Grid.hpp"
+#include "ui/widgets/Widget.hpp"
 
 Grid::Grid(): Widget() {}
 Grid::~Grid() {
@@ -104,7 +105,7 @@ void Grid::shrink_to_fit() {
 Widget* Grid::get_widget(Coords2 place) {
     return widgets.at(place.y).at(place.x);
 }
-void Grid::set_widget(Coords2 place, Widget* widget) {
+void Grid::set_widget(Coords2 place, Widget* widget, SizePolicy size_policy) {
     if (place.x >= get_dimensions().width && place.y >= get_dimensions().height) {
         set_dimensions(place + Coords2{1, 1});
     }
@@ -117,7 +118,12 @@ void Grid::set_widget(Coords2 place, Widget* widget) {
 
     delete widgets.at(place.y).at(place.x);
     widgets.at(place.y).at(place.x) = widget;
+    if (widget) widget->set_size_policy(size_policy);
+
     calculate_size();
+}
+void Grid::set_widget_size_policy(Coords2 place, SizePolicy size_policy) {
+    widgets.at(place.y).at(place.x)->set_size_policy(size_policy);
 }
 
 void Grid::draw(Rectangle bounds) {

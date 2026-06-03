@@ -16,3 +16,10 @@ Vector2 Widget::get_size() const {
 void Widget::calculate_size() {
     if (parent) parent->calculate_size();
 }
+
+SizePolicy Widget::get_size_policy() {
+    return size_policy;
+}
+void Widget::set_size_policy(SizePolicy size_policy) {
+    this->size_policy = size_policy;
+}
