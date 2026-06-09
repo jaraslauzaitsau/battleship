@@ -21,7 +21,7 @@ void load_ships() {
         ships.push_back({});
         for (size_t i = 0; i < ships_filenames.at(length).size(); i++) {
             ships.at(length).emplace_back(
-                LoadTexture(("assets/textures" + ships_filenames.at(length).at(i)).c_str())
+                LoadTexture(("assets/textures/" + ships_filenames.at(length).at(i)).c_str())
             );
         }
     }
