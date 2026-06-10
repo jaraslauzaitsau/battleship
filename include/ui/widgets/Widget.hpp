@@ -7,6 +7,11 @@ enum class SizePolicyValue {
     Expand
 };
 struct SizePolicy {
+    inline SizePolicy(SizePolicyValue horizontal, SizePolicyValue vertical):
+        horizontal(horizontal), vertical(vertical) {}
+    inline SizePolicy(SizePolicyValue all_directions = SizePolicyValue::Fit):
+        SizePolicy(all_directions, all_directions) {}
+    
     SizePolicyValue horizontal = SizePolicyValue::Expand;
     SizePolicyValue vertical = SizePolicyValue::Expand;
 };
