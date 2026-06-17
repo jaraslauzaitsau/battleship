@@ -10,7 +10,7 @@ Grid::~Grid() {
     }
 }
 
-void Grid::calculate_column_size(int col) {
+void Grid::calculate_column_size(size_t col) {
     float size = 0;
     for (int y = 0; y < row_size.size(); y++) {
         Widget* w = widgets.at(y).at(col);
@@ -21,7 +21,7 @@ void Grid::calculate_column_size(int col) {
     }
     column_size.at(col) = size;
 }
-void Grid::calculate_row_size(int row) {
+void Grid::calculate_row_size(size_t row) {
     float size = 0;
     for (int x = 0; x < column_size.size(); x++) {
         Widget* w = widgets.at(row).at(x);
@@ -50,15 +50,90 @@ void Grid::calculate_size() {
     Widget::calculate_size();
 }
 
+void Grid::calculate_column_size_policy(size_t col) {
+    SizePolicyValue policy = SizePolicyValue::Fit;
+    for (int y = 0; y < row_size.size(); y++) {
+        Widget* w = widgets.at(y).at(col);
+        if (!w) continue;
+        SizePolicyValue widget_policy = w->get_size_policy().horizontal;
+        if (has_precedence(widget_policy, policy)) policy = widget_policy;
+    }
+    column_size_policy.at(col) = policy;
+}
+void Grid::calculate_row_size_policy(size_t row) {
+    SizePolicyValue policy = SizePolicyValue::Fit;
+    for (int x = 0; x < column_size.size(); x++) {
+        Widget* w = widgets.at(row).at(x);
+        if (!w) continue;
+        SizePolicyValue widget_policy = w->get_size_policy().vertical;
+        if (has_precedence(widget_policy, policy)) policy = widget_policy;
+    }
+    row_size_policy.at(row) = policy;
+}
+void Grid::calculate_size_policies() {
+    for (int x = 0; x < column_size_policy.size(); x++) {
+        calculate_column_size_policy(x);
+    }
+    for (int y = 0; y < row_size_policy.size(); y++) {
+        calculate_row_size_policy(y);
+    }
+}
+
+void Grid::calculate_real_sizes(Rectangle bounds) {
+    float fixed_width = 0;
+    int expand_width_count = 0;
+    for (size_t i = 0; i < column_size.size(); ++i) {
+        if (column_size_policy.at(i) == SizePolicyValue::Fit) {
+            fixed_width += column_size.at(i);
+        } else {
+            expand_width_count++;
+        }
+    }
+    float available_for_expand_width = std::max(0.0f, bounds.width - fixed_width);
+    float expand_width = (expand_width_count > 0) ? (available_for_expand_width / expand_width_count) : 0;
+
+    column_size_real.resize(column_size.size());
+    for (size_t i = 0; i < column_size.size(); ++i) {
+        if (column_size_policy.at(i) == SizePolicyValue::Fit) {
+            column_size_real.at(i) = column_size.at(i);
+        } else {
+            column_size_real.at(i) = expand_width;
+        }
+    }
+
+    float fixed_height = 0;
+    int expand_height_count = 0;
+    for (size_t i = 0; i < row_size.size(); ++i) {
+        if (row_size_policy.at(i) == SizePolicyValue::Fit) {
+            fixed_height += row_size.at(i);
+        } else {
+            expand_height_count++;
+        }
+    }
+    float available_for_expand_height = std::max(0.0f, bounds.height - fixed_height);
+    float expand_height = (expand_height_count > 0) ? (available_for_expand_height / expand_height_count) : 0;
+
+    row_size_real.resize(row_size.size());
+    for (size_t i = 0; i < row_size.size(); ++i) {
+        if (row_size_policy.at(i) == SizePolicyValue::Fit) {
+            row_size_real.at(i) = row_size.at(i);
+        } else {
+            row_size_real.at(i) = expand_height;
+        }
+    }
+}
+
 Coords2 Grid::get_dimensions() {
     return {(int)column_size.size(), (int)row_size.size()};
 }
 void Grid::set_dimensions(Coords2 dimensions) {
     if (dimensions.width > -1) {
         column_size.resize(dimensions.width);
+        column_size_policy.resize(dimensions.width);
     }
     if (dimensions.height > -1) {
         row_size.resize(dimensions.height);
+        row_size_policy.resize(dimensions.height);
     }
 
     widgets.resize(row_size.size(), std::vector<Widget*>(column_size.size(), nullptr));
@@ -109,10 +184,10 @@ void Grid::set_widget(Coords2 place, Widget* widget, SizePolicy size_policy) {
     if (place.x >= get_dimensions().width && place.y >= get_dimensions().height) {
         set_dimensions(place + Coords2{1, 1});
     }
-    else if (place.x > get_dimensions().width) {
+    else if (place.x >= get_dimensions().width) {
         set_dimensions({place.x + 1, -1});
     }
-    else if (place.y > get_dimensions().height) {
+    else if (place.y >= get_dimensions().height) {
         set_dimensions({-1, place.y + 1});
     }
 
@@ -126,27 +201,14 @@ void Grid::set_widget_size_policy(Coords2 place, SizePolicy size_policy) {
     widgets.at(place.y).at(place.x)->set_size_policy(size_policy);
 }
 
-void Grid::draw(Rectangle bounds) {
-    std::vector<float> column_size_real(column_size.size());
-    std::vector<float> row_size_real(row_size.size());
-
-    float width_ratio = bounds.width / size.x;
-    float height_ratio = bounds.height / size.y;
-
-    for (int x = 0; x < column_size_real.size(); x++) {
-        column_size_real.at(x) = column_size.at(x) * width_ratio;
-    }
-    for (int y = 0; y < row_size_real.size(); y++) {
-        row_size_real.at(y) = row_size.at(y) * height_ratio;
-    }
-
+void Grid::draw_widgets(Vector2 position, const std::vector<float>& column_size_real, const std::vector<float>& row_size_real) {
     float pos_y = 0;
     for (int y = 0; y < row_size_real.size(); y++) {
         float pos_x = 0;
         for (int x = 0; x < column_size_real.size(); x++) {
             if (widgets.at(y).at(x)) {
                 widgets.at(y).at(x)->draw(
-                    {bounds.x + pos_x, bounds.y + pos_y,
+                    {position.x + pos_x, position.y + pos_y,
                     column_size_real.at(x), row_size_real.at(y)}
                 );
             }
@@ -154,4 +216,11 @@ void Grid::draw(Rectangle bounds) {
         }
         pos_y += row_size_real.at(y);
     }
+}
+
+void Grid::draw(Rectangle bounds) {
+    calculate_size_policies();
+    calculate_real_sizes(bounds);
+    
+    draw_widgets({bounds.x, bounds.y}, column_size_real, row_size_real);
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Widget.hpp"
+#include "raylib.h"
+#include <cstddef>
 #include <vector>
 
 struct Coords2 {
@@ -11,7 +13,7 @@ struct Coords2 {
         return {-x, -y};
     }
     Coords2 operator+(Coords2 other) {
-        return {x + other.x, y + other.x};
+        return {x + other.x, y + other.y};
     }
     Coords2 operator-(Coords2 other) {
         return *this + (-other);
@@ -20,17 +22,33 @@ struct Coords2 {
 
 class Grid: public Widget {
     std::vector<std::vector<Widget*>> widgets;
+
     std::vector<float> column_size;
     std::vector<float> row_size;
 
-    void calculate_column_size(int col);
-    void calculate_row_size(int row);
+    std::vector<SizePolicyValue> column_size_policy;
+    std::vector<SizePolicyValue> row_size_policy;
+
+    std::vector<float> column_size_real;
+    std::vector<float> row_size_real;
+
+    void calculate_column_size(size_t col);
+    void calculate_row_size(size_t row);
+
+    void calculate_column_size_policy(size_t col);
+    void calculate_row_size_policy(size_t row);
+
+    void calculate_real_sizes(Rectangle bounds);
+
+    void draw_widgets(Vector2 position, const std::vector<float>& column_size_real, const std::vector<float>& row_size_real);
 
 public:
     Grid();
     ~Grid() override;
 
     void calculate_size() override;
+    
+    void calculate_size_policies();
 
     Coords2 get_dimensions();
     void set_dimensions(Coords2 dimensions);
