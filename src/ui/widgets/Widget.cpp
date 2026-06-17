@@ -1,5 +1,10 @@
 #include "ui/widgets/Widget.hpp"
 
+bool has_precedence(SizePolicyValue value, SizePolicyValue base) {
+    if ((int)value > (int)base) return true;
+    return false;
+}
+
 Widget::Widget() {}
 Widget::~Widget() {}
 
