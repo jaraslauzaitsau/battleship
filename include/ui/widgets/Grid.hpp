@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Widget.hpp"
-#include "raylib.h"
 #include <cstddef>
 #include <vector>
 
@@ -38,12 +37,13 @@ class Grid: public Widget {
     void calculate_column_size_policy(size_t col);
     void calculate_row_size_policy(size_t row);
 
-    void calculate_real_sizes(Rectangle bounds);
+    void set_widget_bounds();
+    void calculate_real_sizes();
 
-    void draw_widgets(Vector2 position, const std::vector<float>& column_size_real, const std::vector<float>& row_size_real);
+    void draw_widgets(const std::vector<float>& column_size_real, const std::vector<float>& row_size_real);
 
 public:
-    Grid();
+    Grid(Rectangle bounds = {0, 0, 0, 0});
     ~Grid() override;
 
     void calculate_size() override;
@@ -58,5 +58,5 @@ public:
     void set_widget(Coords2 place, Widget* widget = nullptr, SizePolicy size_policy = SizePolicy{});
     void set_widget_size_policy(Coords2 place, SizePolicy size_policy);
 
-    void draw(Rectangle bounds) override;
+    void draw() override;
 };

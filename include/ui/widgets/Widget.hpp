@@ -22,9 +22,10 @@ protected:
     Widget* parent = nullptr;
     SizePolicy size_policy = SizePolicy{};
     Vector2 size = {0, 0};
+    Rectangle bounds;
 
 public:
-    Widget();
+    Widget(Rectangle bounds = {0, 0, 0, 0});
     virtual ~Widget();
 
     Widget* get_parent();
@@ -36,5 +37,8 @@ public:
     SizePolicy get_size_policy();
     void set_size_policy(SizePolicy size_policy);
 
-    virtual void draw(Rectangle bounds) = 0;
+    Rectangle get_bounds();
+    void set_bounds(Rectangle bounds);
+
+    virtual void draw() = 0;
 };

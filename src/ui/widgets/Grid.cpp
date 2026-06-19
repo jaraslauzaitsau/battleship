@@ -1,7 +1,7 @@
 #include "ui/widgets/Grid.hpp"
 #include "ui/widgets/Widget.hpp"
 
-Grid::Grid(): Widget() {}
+Grid::Grid(Rectangle bounds): Widget(bounds) {}
 Grid::~Grid() {
     for (std::vector<Widget*>& row: widgets) {
         for (Widget* widget: row) {
@@ -79,7 +79,23 @@ void Grid::calculate_size_policies() {
     }
 }
 
-void Grid::calculate_real_sizes(Rectangle bounds) {
+void Grid::set_widget_bounds() {
+    float pos_y = 0;
+    for (int y = 0; y < row_size_real.size(); y++) {
+        float pos_x = 0;
+        for (int x = 0; x < column_size_real.size(); x++) {
+            if (widgets.at(y).at(x)) {
+                widgets.at(y).at(x)->set_bounds(
+           			{bounds.x + pos_x, bounds.y + pos_y, column_size_real.at(x), row_size_real.at(y)}
+                );
+            }
+            pos_x += column_size_real.at(x);
+        }
+        pos_y += row_size_real.at(y);
+    }
+}
+
+void Grid::calculate_real_sizes() {
     float fixed_width = 0;
     int expand_width_count = 0;
     for (size_t i = 0; i < column_size.size(); ++i) {
@@ -121,6 +137,8 @@ void Grid::calculate_real_sizes(Rectangle bounds) {
             row_size_real.at(i) = expand_height;
         }
     }
+
+    set_widget_bounds();
 }
 
 Coords2 Grid::get_dimensions() {
@@ -201,26 +219,19 @@ void Grid::set_widget_size_policy(Coords2 place, SizePolicy size_policy) {
     widgets.at(place.y).at(place.x)->set_size_policy(size_policy);
 }
 
-void Grid::draw_widgets(Vector2 position, const std::vector<float>& column_size_real, const std::vector<float>& row_size_real) {
-    float pos_y = 0;
+void Grid::draw_widgets(const std::vector<float>& column_size_real, const std::vector<float>& row_size_real) {
     for (int y = 0; y < row_size_real.size(); y++) {
-        float pos_x = 0;
         for (int x = 0; x < column_size_real.size(); x++) {
             if (widgets.at(y).at(x)) {
-                widgets.at(y).at(x)->draw(
-                    {position.x + pos_x, position.y + pos_y,
-                    column_size_real.at(x), row_size_real.at(y)}
-                );
+                widgets.at(y).at(x)->draw();
             }
-            pos_x += column_size_real.at(x);
         }
-        pos_y += row_size_real.at(y);
     }
 }
 
-void Grid::draw(Rectangle bounds) {
+void Grid::draw() {
     calculate_size_policies();
-    calculate_real_sizes(bounds);
+    calculate_real_sizes();
     
-    draw_widgets({bounds.x, bounds.y}, column_size_real, row_size_real);
+    draw_widgets(column_size_real, row_size_real);
 }
