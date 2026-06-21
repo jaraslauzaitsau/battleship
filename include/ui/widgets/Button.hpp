@@ -13,18 +13,16 @@ enum class ButtonStates {
 class Button : public Label {
     ButtonStates button_state = ButtonStates::Normal;
 public:
-    Button();
-    Button(const std::string& text);
+    Button(Rectangle bounds = {0, 0, 0, 0});
+    Button(const std::string& text = "", Rectangle bounds = {0, 0, 0, 0});
     ~Button() override;
 
     const ButtonStates get_button_state();
-    void update_button_state(Rectangle bounds);
+    void update_button_state();
 
     void set_button_state(ButtonStates button_state);
-    
 
     void calculate_size() override;
     
-    void draw(Rectangle bounds) override;
-    
+    void draw() override;
 };

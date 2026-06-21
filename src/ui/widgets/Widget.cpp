@@ -5,7 +5,7 @@ bool has_precedence(SizePolicyValue value, SizePolicyValue base) {
     return false;
 }
 
-Widget::Widget() {}
+Widget::Widget(Rectangle bounds): bounds(bounds) {}
 Widget::~Widget() {}
 
 Widget* Widget::get_parent() {
@@ -27,4 +27,11 @@ SizePolicy Widget::get_size_policy() {
 }
 void Widget::set_size_policy(SizePolicy size_policy) {
     this->size_policy = size_policy;
+}
+
+Rectangle Widget::get_bounds() {
+    return bounds;
+}
+void Widget::set_bounds(Rectangle bounds) {
+    this->bounds = bounds;
 }

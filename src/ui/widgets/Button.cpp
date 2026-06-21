@@ -3,15 +3,15 @@
 #include "raygui.h"
 #include "ui/widgets/Label.hpp"
 
-Button::Button() : Label() { }
-Button::Button(const std::string& text) : Label(text) { }
+Button::Button(Rectangle bounds) : Label(bounds) { }
+Button::Button(const std::string& text, Rectangle bounds) : Label(text, bounds) { }
 Button::~Button() { }
 
 const ButtonStates Button::get_button_state() {
     return button_state;
 }
 
-void Button::update_button_state(Rectangle bounds) {
+void Button::update_button_state() {
     if(button_state == ButtonStates::Disabled)
         return;
     
@@ -41,6 +41,6 @@ void Button::calculate_size()
     Label::calculate_size();
 }
 
-void Button::draw(Rectangle bounds) { 
-    Label::draw(bounds);
+void Button::draw() { 
+    Label::draw();
 }   

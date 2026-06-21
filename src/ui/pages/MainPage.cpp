@@ -13,5 +13,5 @@ MainPage::~MainPage() {
 }
 
 void MainPage::draw() {
-    grid.draw({0, 0, 800, 600});
+    grid.draw();
 }

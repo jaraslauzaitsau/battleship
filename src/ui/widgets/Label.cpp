@@ -1,9 +1,8 @@
 #include "ui/widgets/Label.hpp"
 #include "raygui.h"
-#include "raylib.h"
 
-Label::Label(): Widget() {}
-Label::Label(const std::string& text): Label() {
+Label::Label(Rectangle bounds): Widget(bounds) {}
+Label::Label(const std::string& text, Rectangle bounds): Label(bounds) {
     set_text(text);
 }
 Label::~Label() {}
@@ -39,6 +38,6 @@ void Label::set_text(const std::string& new_text) {
     calculate_size();
 }
 
-void Label::draw(Rectangle bounds) {
+void Label::draw() {
     GuiLabel(bounds, text.c_str());
 }

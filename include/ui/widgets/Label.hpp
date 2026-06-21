@@ -2,14 +2,13 @@
 
 #include "Widget.hpp"
 #include <string>
-#include <raylib.h>
 
 class Label: public Widget {
     std::string text = "";
 
 public:
-    Label();
-    Label(const std::string& text);
+	Label(Rectangle bounds = {0, 0, 0, 0});
+    Label(const std::string& text = "", Rectangle bounds = {0, 0, 0, 0});
     ~Label() override;
 
     void calculate_size() override;
@@ -17,5 +16,5 @@ public:
     const std::string& get_text();
     void set_text(const std::string& new_text);
 
-    void draw(Rectangle bounds) override;
+    void draw() override;
 };
