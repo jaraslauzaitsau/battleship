@@ -13,4 +13,4 @@ file(GLOB_RECURSE SOURCES "src/*.c" "src/*.cpp")
 
 add_executable(battleship ${SOURCES} ${INCLUDES})
 target_include_directories(battleship PRIVATE include)
-target_link_libraries(battleship PRIVATE raylib raygui)
+target_link_libraries(battleship PRIVATE stdc++ raylib raygui)
