@@ -44,13 +44,19 @@ for arg in "$@"; do
 
 		--gdb) run=true; debugger="gdb";;
 		--lldb) run=true; debugger="lldb";;
-		
+
 		*) echo "$error_string unknown argument: '$arg'"; exit 1;;
 	esac
 done
 # Check if the user provided --dir without an argument
 if [[ "$dir" == true ]]; then
 	echo "$error_string --dir requires an argument"
+	exit 1
+fi
+
+# Check for CMake
+if ! command -v cmake 1>/dev/null; then
+	echo "$error_string CMake not present in system. Install it and try again."
 	exit 1
 fi
 
