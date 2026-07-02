@@ -152,12 +152,14 @@ else
 		if [[ "$existing_compiler" != "$compiler" ]]; then
 			echo "$error_string build directory '$build_dir' was configured with a different compiler '$existing_compiler' \
 (now provided '$compiler'). Run with --clean to reconfigure."
+			exit 1
 		fi
 	fi
 	if [[ -n "$linker" && -n "$existing_linker" ]]; then
 		if [[ "$existing_linker" != "$linker" ]]; then
 			echo "$error_string build directory '$build_dir' was configured with a different linker '$existing_linker'. \
 (now provided '$linker'). Run with --clean to reconfigure."
+			exit 1
 		fi
 	fi
 fi
