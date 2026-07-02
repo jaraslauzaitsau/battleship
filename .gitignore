@@ -2,4 +2,4 @@
 .vscode/
 .zed/
 build/
-build-*/
+build_*/
