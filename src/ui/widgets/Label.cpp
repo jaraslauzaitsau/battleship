@@ -7,11 +7,13 @@ Label::Label(const std::string& text, Rectangle bounds): Label(bounds) {
 }
 Label::~Label() {}
 
-void Label::calculate_size() {
-    const float font_size = (float)GuiGetStyle(DEFAULT, TEXT_SIZE);
-    const float spacing = (float)GuiGetStyle(DEFAULT, TEXT_SPACING);
-    const int border = GuiGetStyle(LABEL, BORDER_WIDTH);
-    const int padding = GuiGetStyle(LABEL, TEXT_PADDING);
+Vector2 Label::calculate_size_for_raygui_control(int control) {
+	Vector2 size = {0, 0};
+
+	const float font_size = (float)GuiGetStyle(control, TEXT_SIZE);
+    const float spacing = (float)GuiGetStyle(control, TEXT_SPACING);
+    const int border = GuiGetStyle(control, BORDER_WIDTH);
+    const int padding = GuiGetStyle(control, TEXT_PADDING);
 
     size = MeasureTextEx(
         GuiGetFont(),
@@ -27,6 +29,11 @@ void Label::calculate_size() {
     size.x += 2.0f * (float)(border + padding);
     size.y += 2.0f * (float)(border + padding);
 
+    return size;
+}
+
+void Label::calculate_size() {
+    size = calculate_size_for_raygui_control(LABEL);
     Widget::calculate_size();
 }
 

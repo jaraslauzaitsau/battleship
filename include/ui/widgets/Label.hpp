@@ -4,7 +4,9 @@
 #include <string>
 
 class Label: public Widget {
+protected:
     std::string text = "";
+    Vector2 calculate_size_for_raygui_control(int control);
 
 public:
 	Label(Rectangle bounds = {0, 0, 0, 0});
