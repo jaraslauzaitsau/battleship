@@ -211,7 +211,10 @@ void Grid::set_widget(Coords2 place, Widget* widget, SizePolicy size_policy) {
 
     delete widgets.at(place.y).at(place.x);
     widgets.at(place.y).at(place.x) = widget;
-    if (widget) widget->set_size_policy(size_policy);
+    if (widget) {
+        widget->set_size_policy(size_policy);
+        widget->calculate_size();
+    }
 
     calculate_size();
 }
