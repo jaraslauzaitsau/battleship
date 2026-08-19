@@ -10,8 +10,8 @@ Label::~Label() {}
 Vector2 Label::calculate_size_for_raygui_control(int control) {
 	Vector2 size = {0, 0};
 
-	const float font_size = (float)GuiGetStyle(control, TEXT_SIZE);
-    const float spacing = (float)GuiGetStyle(control, TEXT_SPACING);
+    const float font_size = (float)GuiGetStyle(DEFAULT, TEXT_SIZE);
+    const float spacing = (float)GuiGetStyle(DEFAULT, TEXT_SPACING);
     const int border = GuiGetStyle(control, BORDER_WIDTH);
     const int padding = GuiGetStyle(control, TEXT_PADDING);
 

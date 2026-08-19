@@ -52,7 +52,7 @@ void Button::set_callback(std::function<void()> callback) {
 }
 
 void Button::calculate_size() {
-	size = calculate_size_for_raygui_control(LABEL);
+	size = calculate_size_for_raygui_control(BUTTON);
 	Widget::calculate_size();
 }
 
